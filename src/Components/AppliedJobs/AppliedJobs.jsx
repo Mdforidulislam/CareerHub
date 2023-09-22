@@ -1,14 +1,52 @@
 import { NavLink, useLoaderData } from 'react-router-dom';
+import { getJobApplicationFLS } from '../../utility/localStore';
+import { useEffect, useState } from 'react';
 
 const AppliedJobs = () => {
     const jobLoaderData = useLoaderData();
+    const [ displayJob,setDisplayJob] = useState([])
+    const [ jobSortView,setJobSortView] = useState([])
+const handleSortAllView = (fillterAply) =>{
+     if (fillterAply === 'all') {
+        setJobSortView(displayJob);
+     } else if(fillterAply === 'Onsite'){
+            const onsiteJobs = displayJob.filter((job) => job.remote_or_onsite === 'Onsite')
+            setJobSortView(onsiteJobs);
+     }else if(fillterAply === 'Remote'){
+        const remoteJob = displayJob.filter((job) => job.remote_or_onsite === 'Remote')
+        setJobSortView(remoteJob);      
+    }
+    else{
+    setJobSortView(displayJob)
+    }
+
+}
+    useEffect(()=>{
+        const getDataFormLostore = getJobApplicationFLS()
+        const getValueDisplay = jobLoaderData.filter(jobs =>  getDataFormLostore.includes(jobs.id))
+        setDisplayJob(getValueDisplay);
+    },[jobLoaderData])
+
     return (
         <div>
             <div><h1>Applied Jobs</h1></div>
             <dir>
-                <div> </div>
+                <div>  <div className="form-control w-full max-w-xs">
+                                   <div>
+                                    <details className="dropdown mb-32">
+                                            <summary className="m-1 btn">open or close</summary>
+                                            <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
+                                                <li onClick={()=>handleSortAllView('all')}><a>All</a></li>
+                                                <li onClick={()=>handleSortAllView('Onsite')}><a>OnSite</a></li>
+                                                <li onClick={()=>handleSortAllView('Remote')}><a>Remote</a></li>
+                                            </ul>
+                                            </details>
+                                    </div>
+                       </div>
+
+ </div>
                {
-                jobLoaderData.map((job)=>(
+                jobSortView.map((job)=>(
                 <div key={job.id}>
                     <div className='block md:flex gap-6 justify-between p-7 rounded-xl bg-slate-500 m-5 items-center'>
                         <div className='block md:flex gap-5 items-center'>

@@ -1,16 +1,21 @@
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { saveApplicationFLS } from "../../utility/localStore";
+
+
 
 const JobDetails = () => {
     const jobData = useLoaderData()
     const id = useParams();
     const parId = parseInt(id.jobId);
     const jobDetails = jobData.find(job => job.id === parId)
-    
-console.log(parId);
     const goHome = useNavigate();
     const handleGohome = () =>{
         goHome(-1)
     }
+const handleSaveLocal = (jobId) =>{
+    saveApplicationFLS(jobId)
+    
+}
     return (
         <div>
                 <button onClick={handleGohome} className="btn">
@@ -39,7 +44,7 @@ console.log(parId);
                             <p><span></span>Email: {jobDetails?.contact_information.email}</p>
                             <p><span></span>Address: {jobDetails?.contact_information.address}</p>
                         </div>
-                        <button className=" w-full btn bg-gradient-to-r from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500">Apply Now</button>
+                        <button onClick={()=>handleSaveLocal(jobDetails.id)} className=" w-full btn bg-gradient-to-r from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500">Apply Now</button>
                     </div>
                 </div>
         </div>
